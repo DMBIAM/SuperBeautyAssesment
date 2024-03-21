@@ -30,7 +30,7 @@ python manage.py startapp inventario
 
 -- Equipo: Este modelo contiene campos como referencia, marca, procesador, memoria, disco y tipo para describir cada equipo.
 
-![Create Equipment](https://github.com/DMBIAM/SuperBeautyAssesment/blob/main/pic-evidence/add_equipement.png)
+![Create Equipment](https://github.com/DMBIAM/SuperBeautyAssesment/blob/main/pic-evidence/add_equipment.png)
 
 -- EquipoUsuario: Este modelo registra la asignación de equipos a usuarios, con campos como llave foránea Equipo, llave foránea usuario (de Django), fecha de asignación y fecha de entrega.
 
