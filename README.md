@@ -151,6 +151,54 @@ Este archivo define la configuración para construir la imagen Docker. Incluye l
 - Migración de la base de datos.
 - Creación del superusuario de Django.
 
+Ejemplo:
+
+```bash
+# Start Build
+FROM python:3.7 AS builder
+
+# Custom label
+LABEL autor="David Martinez B"
+LABEL version=1.0
+
+# ARG 
+ARG PORT=8000
+ARG PWD_DJANGO
+ARG USER_DJANGO
+ARG USER_MAIL
+ARG REPO
+
+# Install git for clone repo
+RUN apt-get update && \
+    apt-get install -y git && \
+    apt-get clean
+
+# Install pylint and coverage
+RUN pip install --no-input pylint coverage pytest bandit
+
+# SET /app default dir
+WORKDIR /app
+
+# Clone the repository where the code is located
+RUN git clone $REPO .
+
+# Install dependencies.
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+
+# RUN Migrate database
+RUN python3 manage.py makemigrations inventario
+RUN python3 manage.py migrate inventario
+
+RUN python manage.py makemigrations
+RUN python manage.py migrate
+
+# Cretae superuser
+RUN DJANGO_SUPERUSER_USERNAME=$USER_DJANGO \
+    DJANGO_SUPERUSER_PASSWORD=$PWD_DJANGO \
+    DJANGO_SUPERUSER_EMAIL=$USER_MAIL \
+    python manage.py shell -c "from django.contrib.auth.models import User; User.objects.filter(username='$USER_DJANGO').exists() or User.objects.create_superuser('$USER_DJANGO', '$DJANGO_SUPERUSER_EMAIL', '$PWD_DJANGO')"
+```
 
 4. **Ejecución del contenedor**
 
